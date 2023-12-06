@@ -41,7 +41,6 @@ async function fetchProducts() {
   });
 }
 
-
 // Event listener for Add Product form submit button
 addProductForm.addEventListener('submit', async event => {
   event.preventDefault();
@@ -49,6 +48,17 @@ addProductForm.addEventListener('submit', async event => {
   const price = addProductForm.elements['price'].value;
   await addProduct(name, price);
   addProductForm.reset();
+  await fetchProducts();
+});
+
+// Event listener for Update Product form submit button
+updateProductForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const id = updateProductId.value;
+  const name = updateProductName.value;
+  const price = updateProductPrice.value;
+  await updateProduct(id, name, price);
+  updateProductForm.reset();
   await fetchProducts();
 });
 
@@ -64,17 +74,30 @@ async function addProduct(name, price) {
   return response.json();
 }
 
-// Function to delete a new product
+// Function to delete a product
 async function deleteProduct(id) {
   const response = await fetch('http://localhost:3000/products/' + id, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
+    }
+  });
+  return response.json();
+}
+
+// Function to update an existing product
+async function updateProduct(id, name, price) {
+  const response = await fetch('http://localhost:3000/products/' + id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
     },
-    //body: JSON.stringify({id})
+    body: JSON.stringify({ name, price })
   });
   return response.json();
 }
 
 // Fetch all products on page load
 fetchProducts();
+
+
